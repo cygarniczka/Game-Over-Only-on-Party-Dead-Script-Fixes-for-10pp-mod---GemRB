@@ -1,0 +1,219 @@
+IF
+	Global("#GStartSpl","GLOBAL",0)
+THEN
+	RESPONSE #100
+		Wait(9)
+		ActionOverride(Player1,ReallyForceSpellRES("#GSTART",Myself))
+		SetGlobal("#GStartSpl","GLOBAL",1)
+END
+
+IF
+	!Kit(Player1,UNDEADHUNTER)
+	!CheckStat(Player1,1,158)
+	HPLT(Player1,36)
+	Global("#GNOLDR","GLOBAL",0)	
+	ActuallyInCombat()
+	OR(15)
+	 TriggerOverride(Player1,InMyArea([ENEMY.0.0.VAMPIRE]))
+	 TriggerOverride(Player1,InMyArea([ENEMY.0.0.VAMPYRE]))
+	 TriggerOverride(Player1,InMyArea([ENEMY.0.0.WRAITH]))
+	 TriggerOverride(Player1,InMyArea([ENEMY.0.0.SPECTRE]))
+	 TriggerOverride(Player1,InMyArea([ENEMY.0.0.MIST]))
+	 TriggerOverride(Player1,InMyArea([ENEMY.0.0.121.7]))
+	 TriggerOverride(Player1,InMyArea([ENEMY.4.124]))
+	 TriggerOverride(Player1,InMyArea("NevPupil"))
+	 TriggerOverride(Player1,InMyArea("chalslay"))
+	 TriggerOverride(Player1,InMyArea("chalpc01"))
+	 TriggerOverride(Player1,InMyArea("gorwom01"))
+	 TriggerOverride(Player1,InMyArea("gorsuc01"))
+	 TriggerOverride(Player1,InMyArea("demsuc01"))
+	 TriggerOverride(Player1,InMyArea("demogor2"))
+	 TriggerOverride(Player1,InMyArea("artemis"))
+THEN
+	RESPONSE #100
+		ActionOverride(Player1,ReallyForceSpellRES("#GDRIMM",Myself))
+END
+
+IF
+	HPGT(Player1,35)
+	Global("#GNOLDR","GLOBAL",1)
+THEN
+	RESPONSE #100
+		ActionOverride(Player1,ReallyForceSpellRES("#GIMMOFF",Myself))
+END
+
+IF
+	TriggerOverride(Player1,Global("#GDEATH","LOCALS",1))
+THEN
+	RESPONSE #100
+		ActionOverride(Player1,SetGlobal("#GDEATH","LOCALS",0))
+		ActionOverride(Player1,ApplyDamagePercent(Myself,100,MAGIC))
+		SetGlobal("#GBhaalHP1","GLOBAL",1)
+END
+
+IF
+	HPLT(Player1,2)
+	Global("#GBhaalHP1","GLOBAL",0)
+	Global("#GHPOFF","GLOBAL",0)							 // WTP Compatibiltiy
+	Global("#GFAMGO","GLOBAL",0)							 // WTP Compatibiltiy
+THEN
+	RESPONSE #100
+		SetGlobal("#GBhaalHP1","GLOBAL",1)
+END
+
+IF
+	Global("#GBhaalHP1","GLOBAL",1)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+		ActionOverride(Player1,MakeUnselectable(360000))
+		ActionOverride(Player1,SetSequence(SEQ_DIE))
+		VerbalConstant(Player1,DYING)
+		ActionOverride(Player1,ReallyForceSpellRES("#GCLEAR",Myself))
+		ActionOverride(Player1,ReallyForceSpellRES("#GBHAAL",Myself))
+		SetGlobal("#GBhaalHP1","GLOBAL",2)
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("#GBhaalHP1","GLOBAL",2)							 // WTP Compatibility
+	TriggerOverride(Player1,Global("#GWTPCOM","LOCALS",2))
+THEN
+	RESPONSE #100
+		ActionOverride(Player1,ReallyForceSpellRES("WTPFCON4",Myself))
+		ActionOverride(Player1,SetGlobal("#GWTPCOM","LOCALS",0))
+END
+
+IF
+	Global("#GBhaalHP1","GLOBAL",2)  
+ 	OR(2)
+  	 NumInPartyLT(2)
+ 	 StateCheck(Player2,STATE_REALLY_DEAD)
+	OR(2)
+	 NumInPartyLT(3)
+	 StateCheck(Player3,STATE_REALLY_DEAD)
+	OR(2)
+	 NumInPartyLT(4)
+	 StateCheck(Player4,STATE_REALLY_DEAD)
+	OR(2)
+ 	 NumInPartyLT(5)
+ 	 StateCheck(Player5,STATE_REALLY_DEAD)
+ 	OR(2)
+  	 NumInPartyLT(6)
+   	 StateCheck(Player6,STATE_REALLY_DEAD)
+	 OR(2)
+  	 NumInPartyLT(7)
+   	 StateCheck(Player7,STATE_REALLY_DEAD)
+	 OR(2)
+  	 NumInPartyLT(8)
+   	 StateCheck(Player8,STATE_REALLY_DEAD)
+	 OR(2)
+  	 NumInPartyLT(9)
+   	 StateCheck(Player9,STATE_REALLY_DEAD)
+	 OR(2)
+  	 NumInPartyLT(10)
+   	 StateCheck(Player10,STATE_REALLY_DEAD)
+THEN
+	RESPONSE #100
+		SetInterrupt(FALSE)
+    		ClearAllActions()
+    		StartCutSceneMode()
+		FadeToColor([40.0],0)
+    		Wait(4)
+		ActionOverride(Player1,MoveViewObject(Myself,INSTANT))
+		FadeFromColor([40.0],0)
+		Wait(4)
+   		ActionOverride(Player1,SetPlayerSound(Myself,#0,DYING))
+    		ActionOverride(Player1,ReallyForceSpellRES("#GFADE",Myself))   		
+    		Wait(9)
+    		FadeToColor([40.0],0)
+    		Wait(3)
+		SetGlobal("#GBhaalHP1","GLOBAL",0)
+    		LoseGame() // ToBEx only
+		SetInterrupt(TRUE)
+END
+
+IF
+	Global("#GBhaalHP1","GLOBAL",2)
+	!ActuallyInCombat() // not in fight
+	!TriggerOverride(Player1,CheckStatGT(Myself,0,IN_A_CLOUD))			 // not in a cloud
+        !TriggerOverride(Player1,Detect([EVILCUTOFF])) 					 // no enemies around (ToBEx only)
+        OR(5)
+         TriggerOverride(Player1,Range(Player2,20))
+         TriggerOverride(Player1,Range(Player3,20))
+         TriggerOverride(Player1,Range(Player4,20))
+         TriggerOverride(Player1,Range(Player5,20))
+         TriggerOverride(Player1,Range(Player6,20))
+		 TriggerOverride(Player1,Range(Player7,20))
+		 TriggerOverride(Player1,Range(Player8,20))
+		 TriggerOverride(Player1,Range(Player9,20))
+		 TriggerOverride(Player1,Range(Player10,20))
+        OR(2)
+	 !Exists("shoal")
+	 Dead("shoal")	
+THEN	
+	RESPONSE #100
+                SetInterrupt(FALSE)
+		ClearAllActions()
+		StartCutSceneMode()
+		FadeToColor([40.0],0)
+		Wait(4)
+		ActionOverride(Player1,MoveViewObject(Myself,INSTANT))
+		FadeFromColor([40.0],0)
+		Wait(4)    
+		ActionOverride(Player1,MakeUnselectable(0))
+		ActionOverride(Player1,ReallyForceSpellRES("#GAWAKE",Myself))
+		ActionOverride(Player1,Face(0))
+		Wait(6)
+		EndCutSceneMode()
+		IncrementGlobal("#GBhaalKilled","GLOBAL",1)
+		SetGlobal("#GSpoke","GLOBAL",1)
+        	SetGlobal("#GBhaalHP1","GLOBAL",0)
+                SetInterrupt(TRUE)
+END
+
+IF
+	Global("#GSpoke","GLOBAL",1)
+	Global("#GBhaalKilled","GLOBAL",1)
+THEN
+	RESPONSE #100
+		DisplayStringHead(Player1,@1000) 					 // I am still alive...
+		AddJournalEntry(@1005,INFO)
+		SetGlobal("#GSpoke","GLOBAL",2)
+END
+
+IF
+	Global("#GSpoke","GLOBAL",1)
+	Global("#GBhaalKilled","GLOBAL",2)
+THEN
+	RESPONSE #100
+		DisplayStringHead(Player1,@1001) 					 // I thought I was really dead this time...
+		SetGlobal("#GSpoke","GLOBAL",2)
+END
+
+IF
+	Global("#GSpoke","GLOBAL",1)
+	Global("#GBhaalKilled","GLOBAL",3)
+THEN
+	RESPONSE #100
+		DisplayStringHead(Player1,@1002) 					 // It happened again!
+		SetGlobal("#GSpoke","GLOBAL",2)
+END
+
+IF
+	Global("#GSpoke","GLOBAL",1)
+	Global("#GBhaalKilled","GLOBAL",4)
+THEN
+	RESPONSE #100
+		DisplayStringHead(Player1,@1003)					 // You know, I am not developing a taste for this!
+		SetGlobal("#GSpoke","GLOBAL",2)
+END
+
+IF
+	Global("#GSpoke","GLOBAL",1)
+	GlobalGT("#GBhaalKilled","GLOBAL",4)
+THEN
+	RESPONSE #100
+		DisplayStringHead(Player1,@1004)					 // Been there, done that...
+		SetGlobal("#GSpoke","GLOBAL",2)
+END

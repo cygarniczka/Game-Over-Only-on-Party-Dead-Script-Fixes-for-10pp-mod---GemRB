@@ -1,0 +1,90 @@
+IF
+  Global("#GShoMa","LOCALS",0)
+  Detect(Myself) 				// overwrite any previous See()
+  OR(2)
+    !See(Player2)
+    RandomNumLT(9,9)
+  OR(2)
+    !See(Player3)
+    RandomNumLT(9,8)
+  OR(2)
+    !See(Player4)
+    RandomNumLT(9,7)
+  OR(2)
+    !See(Player5)
+    RandomNumLT(9,6)
+  OR(2)
+    !See(Player6)
+    RandomNumLT(9,5)
+  OR(2)
+    !See(Player7)
+    RandomNumLT(9,4)
+  OR(2)
+    !See(Player8)
+    RandomNumLT(9,3)
+  OR(2)
+    !See(Player9)
+    RandomNumLT(3,2)
+  !See(Player10)
+  False()
+THEN
+  RESPONSE #100
+    Continue()
+END
+ 
+IF
+  Global("#GShoMa","LOCALS",0)
+  Allegiance(Myself,NEUTRAL)
+  !Range(LastSeenBy(Myself),0) 			// if i've seen somebody after overwrite
+THEN
+  RESPONSE #100
+    SetInterrupt(FALSE)
+    SetGlobal("#GShoMa","LOCALS",1)
+    Dialogue(LastSeenBy(Myself))
+    SetInterrupt(TRUE)
+END
+ 
+IF
+  Global("#GShoMa","LOCALS",0)			 // otherwise just turn hostile
+  Allegiance(Myself,NEUTRAL)
+  See([PC])
+THEN
+  RESPONSE #100
+    SetGlobal("#GShoMa","LOCALS",1)
+    DisplayStringHead(Myself,22170)
+    Enemy()
+END
+
+IF
+  Global("#GPARTY","LOCALS",0)
+  See([PC])
+  !StateCheck(Player2,STATE_REALLY_DEAD)
+  !StateCheck(Player3,STATE_REALLY_DEAD)
+  !StateCheck(Player4,STATE_REALLY_DEAD)
+  !StateCheck(Player5,STATE_REALLY_DEAD)
+  !StateCheck(Player6,STATE_REALLY_DEAD)
+  !StateCheck(Player7,STATE_REALLY_DEAD)
+  !StateCheck(Player8,STATE_REALLY_DEAD)
+  !StateCheck(Player9,STATE_REALLY_DEAD)
+  !StateCheck(Player10,STATE_REALLY_DEAD)
+THEN
+  RESPONSE #100
+    SetGlobal("#GPARTY","LOCALS",1)
+END
+
+IF
+  Global("#GPARTY","LOCALS",1)
+  OR(5)
+   StateCheck(Player2,STATE_DEAD)
+   StateCheck(Player3,STATE_DEAD)
+   StateCheck(Player4,STATE_DEAD)
+   StateCheck(Player5,STATE_DEAD)
+   StateCheck(Player6,STATE_DEAD)
+   StateCheck(Player7,STATE_DEAD)
+   StateCheck(Player8,STATE_DEAD)
+   StateCheck(Player9,STATE_DEAD)
+   StateCheck(Player10,STATE_DEAD)
+THEN
+  RESPONSE #100
+    SetGlobal("ShoalKiss","GLOBAL",1)
+END
